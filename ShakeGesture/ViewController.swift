@@ -7,15 +7,20 @@
 //
 
 import UIKit
+import CoreMotion
 
 class ViewController: UIViewController {
     let label = UILabel()
     let restartButton = UIButton()
+    var motion = CMMotionManager()
+    var timer: Timer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         setupView()
+        startData()
+        
     }
     
     func setupView(){
@@ -54,6 +59,26 @@ class ViewController: UIViewController {
             label.text = "Shaken, not stirred"
         }
     }
+    func startData() {
+        
+        motion.startGyroUpdates()
+        
+        timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(ViewController.update), userInfo: nil, repeats: true)
+        
+    }
     
+    private func roundDouble(value: Double) -> Double {
+        return round(1000 * value)/100
+    }
+    
+    @objc func update() {
+        
+        
+        if let gyroMeterData = motion.gyroData {
+            
+            print(roundDouble(value: gyroMeterData.rotationRate.x))
+            
+        }
+    }
 }
 
